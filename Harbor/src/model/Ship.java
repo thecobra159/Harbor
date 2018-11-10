@@ -10,13 +10,8 @@ package model;
  * @author thecobra
  */
 public class Ship extends Thread {
-    private String name;
     private boolean perishable = false;
     private boolean loading = false;
-
-    public String getName() {
-        this.name = name;
-    }
 
     public boolean isPerishable() {
         return perishable;
@@ -32,5 +27,17 @@ public class Ship extends Thread {
 
     public void setLoading(boolean loading) {
         this.loading = loading;
+    }
+    
+    /**
+     * Method to sleep the ship and return true when it's finished
+     * @param millis
+     * @return true
+     * @throws InterruptedException
+     */
+    public boolean goSleep(long millis) throws InterruptedException {
+        Ship.sleep(millis);
+        System.out.println("ACORDOU");
+        return true;
     }
 }

@@ -26,7 +26,7 @@ public class Singleton {
     }
 
     public List<Ship> isPerishable(List<Ship> listShip) {
-        List<Ship> returnListShip = new ArrayList<Ship>();
+        List<Ship> returnListShip = new ArrayList<>();
         for (Ship ship : listShip) {
             if (ship.isPerishable()) {
                 ship.setPriority(Constants.ISPERISHABLE);

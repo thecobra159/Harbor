@@ -19,6 +19,7 @@ import util.Constants;
 public class Harbor {
 
     private static Scanner in;
+    private static String name;
     private static int qtyHarbor, optionLoadDown, optionPerishible;
     private static List<Ship> listShip, newListShip;
 
@@ -26,14 +27,21 @@ public class Harbor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        listShip = new ArrayList<Ship>();
-        System.out.println("Total de navios: ");
+        in = new Scanner(System.in);
+        listShip = new ArrayList<>();
+        System.out.print("Total de navios: ");
         qtyHarbor = in.nextInt();
 
         for (int i = 0; i < qtyHarbor; i++) {
             Ship ship = new Ship();
+            ship.start();
+
+            System.out.print("Nome: ");
+            name = in.next();
+            ship.setName(name);
 
             menuLoadDown();
+            System.out.print("Fase: ");
             optionLoadDown = in.nextInt();
             if (optionLoadDown == 1) {
                 ship.setLoading(true);
@@ -42,6 +50,7 @@ public class Harbor {
             }
 
             menuPershible();
+            System.out.print("Tipo: ");
             optionPerishible = in.nextInt();
             if (optionPerishible == 1) {
                 ship.setPerishable(true);
@@ -54,29 +63,42 @@ public class Harbor {
 
         newListShip = Singleton.getInstance().isPerishable(listShip);
 
-        for (Ship ship : newListShip) {
-            ship.start();
+        newListShip.stream().map((ship) -> {
+            return ship;
+        }).map((ship) -> {
             if (ship.isPerishable()) {
                 System.out.println("Carga perecível!");
             } else {
                 System.out.println("Carga não perecível!");
             }
-            if (ship.isLoading()) {
-                while (ship.sleep(Constants.SLEEP_LOADING)) {                   //fix this
-                    System.out.println("Carregando");
-                    System.out.print(" .");
-                    System.out.print(".");
-                    System.out.print(".");
+            return ship;
+        }).forEachOrdered((ship) -> {
+            try {
+                if (ship.isLoading()) {
+                    if (!ship.goSleep(Constants.SLEEP_LOADING)) {
+                        System.out.print("Carregando " + ship.getName());
+                        Thread.sleep(1000);
+                        System.out.print(" .");
+                        Thread.sleep(1000);
+                        System.out.print(".");
+                        Thread.sleep(1000);
+                        System.out.println(".");
+                    }
+                } else {
+                    while (!ship.goSleep(Constants.SLEEP_DOWNLOAD)) {
+                        System.out.print("Descarregando " + ship.getName());
+                        Thread.sleep(1000);
+                        System.out.print(" .");
+                        Thread.sleep(1000);
+                        System.out.print(".");
+                        Thread.sleep(1000);
+                        System.out.println(".");
+                    }
                 }
-            } else {
-                while (ship.sleep(Constants.SLEEP_DOWNLOAD)) {                  //fix this
-                    System.out.println("Descarregando");
-                    System.out.print(" .");
-                    System.out.print(".");
-                    System.out.print(".");
-                }
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
-        }
+        });
     }
 
     public static void menuLoadDown() {
@@ -86,6 +108,6 @@ public class Harbor {
 
     public static void menuPershible() {
         System.out.println("1 - Perecível");
-        System.out.println("1 - Não Perecível");
+        System.out.println("2 - Não Perecível");
     }
 }
