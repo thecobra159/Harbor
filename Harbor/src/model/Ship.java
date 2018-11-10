@@ -10,8 +10,13 @@ package model;
  * @author thecobra
  */
 public class Ship extends Thread {
+    private String name;
     private boolean perishable = false;
     private boolean loading = false;
+
+    public String getName() {
+        this.name = name;
+    }
 
     public boolean isPerishable() {
         return perishable;
